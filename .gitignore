@@ -1,3 +1,6 @@
 .idea/
 db.sqlite3
 venv
+tutorial/__pycache__
+snippets/__pycache__
+snippets/migrations
