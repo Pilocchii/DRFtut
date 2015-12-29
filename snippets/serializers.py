@@ -3,19 +3,20 @@ from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 from django.contrib.auth.models import User
 
 
-# ModelSerializer saves us from writing a lot of duplicate information that's already in our model.
-# It is a shortcut for creating serializer classes with an automatically determined set of fields
-# and simple default implementations of create and update methods.
-class SnippetSerializer(serializers.ModelSerializer):
+# HyperlinkedModelSerializer does not include the pk field by default, includes a url field using HyperlinkedIdentityField,
+# and relationships use HyperlinkedRelatedField instead of PrimaryKeyRelatedField
+class SnippetSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
+    highlight = serializers.HyperlinkedIdentityField(view_name='snippet-highlight', format='html')
 
     class Meta:
         model = Snippet
-        fields = ('id', 'title', 'code', 'linenos', 'language', 'style', 'owner')
+        fields = ('id', 'title', 'code', 'linenos', 'language', 'style', 'owner', 'highlight')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    snippets = serializers.HyperlinkedRelatedField(many=True, view_name='snippet-detail', read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'snippets')
+        fields = ('url', 'username', 'snippets')

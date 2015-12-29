@@ -54,6 +54,10 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'tutorial.urls'
 
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 10
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
